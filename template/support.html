@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Customer Support</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+  
+  <style>
+    body{background:#f5f7fb;font-family:Segoe UI,Roboto,Arial}
+    .chat-box{max-width:800px;margin:30px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.08)}
+    .messages{height:420px;overflow:auto;border:1px solid #eef2f7;padding:12px;border-radius:8px;background:#fbfdff}
+    .msg{margin-bottom:12px}
+    .user{color:#0b5ed7}
+    .assistant{color:#212529}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="chat-box">
+      <h4 id="assistantHeader">Customer Support</h4>
+
+      <div id="messages" class="messages mb-3"></div>
+
+      <form id="chatForm" class="d-flex">
+        <input id="prompt" class="form-control me-2" placeholder="Type your question..." autocomplete="off">
+        <button class="btn btn-primary" type="submit">Send</button>
+      </form>
+
+      <div class="text-end mt-2">
+        <a href="/home" class="btn btn-sm btn-secondary">Back</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function appendMessage(role, text){
+      const container = document.getElementById('messages');
+      const el = document.createElement('div');
+      el.className = 'msg';
+      el.innerHTML = `<strong class="${role}">${role === 'user' ? 'You' : 'InsureBot'}:</strong> ${text}`;
+      container.appendChild(el);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    document.getElementById('chatForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const input = document.getElementById('prompt');
+      const text = input.value.trim();
+      if(!text) return;
+      appendMessage('user', text);
+      input.value = '';
+
+      const res = await fetch('/support_api', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({message: text})
+      });
+      const data = await res.json();
+      appendMessage('assistant', data.reply);
+    });
+  </script>
+</body>
+</html>
