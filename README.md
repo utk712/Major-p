@@ -1,6 +1,6 @@
-# InsureBot - Insurance Prediction Web App
+# InsurSence - Insurance Prediction Web App
 
-InsureBot is a comprehensive web application built with Flask that provides personalized insurance premium predictions, policy recommendations, and AI-powered support. It uses machine learning models to analyze user data and predict insurance costs, claim probabilities, and suitable policy types.
+InsureSence is a comprehensive web application built with Flask that provides personalized insurance premium predictions, policy recommendations, and AI-powered support. It uses machine learning models to analyze user data and predict insurance costs, claim probabilities, and suitable policy types.
 
 ## Features
 
