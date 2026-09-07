@@ -53,6 +53,9 @@ class Prediction(Base):
 
 # Database setup with robust fallback
 DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 if not DATABASE_URL:
     DATABASE_URL = 'sqlite:///insurance.db'
 
@@ -75,19 +78,20 @@ def create_tables():
     
     # Safe schema migration for SQLite column updates
     try:
-        with engine.connect() as conn:
-            result = conn.execute(text("PRAGMA table_info(users)")).fetchall()
-            existing_cols = [row[1] for row in result]
-            
-            if 'password_hash' not in existing_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN password_hash VARCHAR(255)"))
-            if 'name' not in existing_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN name VARCHAR(255)"))
-            if 'address' not in existing_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN address VARCHAR(255)"))
-            if 'blood_group' not in existing_cols:
-                conn.execute(text("ALTER TABLE users ADD COLUMN blood_group VARCHAR(50)"))
-            conn.commit()
+        if 'sqlite' in engine.name:
+            with engine.connect() as conn:
+                result = conn.execute(text("PRAGMA table_info(users)")).fetchall()
+                existing_cols = [row[1] for row in result]
+                
+                if 'password_hash' not in existing_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN password_hash VARCHAR(255)"))
+                if 'name' not in existing_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN name VARCHAR(255)"))
+                if 'address' not in existing_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN address VARCHAR(255)"))
+                if 'blood_group' not in existing_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN blood_group VARCHAR(50)"))
+                conn.commit()
     except Exception as e:
         print(f"[WARN] Schema migration note: {e}")
 
