@@ -3,7 +3,12 @@ import pandas as pd
 import joblib
 import os, json, io, re
 from functools import wraps
-from dotenv import load_dotenv
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 from utils.emails_otp import send_otp, verify_otp, otp_store
 from utils.database import save_user, get_user_data, create_tables, save_prediction_data, get_prediction_by_id, update_user_profile, verify_user_password, set_user_password
@@ -17,8 +22,6 @@ try:
     import google.generativeai as genai
 except ImportError:
     genai = None
-
-load_dotenv()
 
 app = Flask(__name__)
 app.template_folder = "template"
