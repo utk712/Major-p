@@ -1,64 +1,171 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Prediction Result</title>
+  <meta charset="UTF-8">
+  <title>Prediction Results - InsureSence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="p-4">
+<body>
 
-<a href="/index" class="btn btn-secondary mb-3">← Back</a>
+  <!-- Ambient Glowing Background Elements -->
+  <div class="bg-glow-orb-1"></div>
+  <div class="bg-glow-orb-2"></div>
 
-<div class="card p-4 shadow">
-  <h2 class="text-center mb-3">🛡️ Prediction Result</h2>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand" href="/home"><i class="bi bi-shield-check"></i> Insure<span>Sence</span></a>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <a href="/dashboard" class="btn btn-outline-light btn-sm"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="/index" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> New Prediction</a>
+        <a href="/download_pdf" class="btn btn-primary-custom btn-sm"><i class="bi bi-file-earmark-pdf"></i> Download PDF</a>
+      </div>
+    </div>
+  </nav>
 
-  <p><strong>Name:</strong> {{ personal_details.name }}</p>
-  <p><strong>Estimated Premium:</strong> ₹{{ premium }}</p>
-  <p><strong>Monthly Payment:</strong> ₹{{ monthly_premium }}</p>
-  <p><strong>Claim Prediction:</strong> {{ "Yes" if claim else "No" }}</p>
+  <div class="container py-5">
+    <div class="glass-card mx-auto" style="max-width: 900px;">
+      
+      <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+        <div>
+          <h2 class="text-gradient m-0"><i class="bi bi-file-earmark-bar-graph text-info me-1"></i> Prediction Assessment</h2>
+          <p class="text-sub small m-0 mt-1">Prepared for <strong>{{ personal_details.name }}</strong> (Blood Group: {{ personal_details.blood_group }})</p>
+        </div>
+        <a href="/download_pdf" class="btn btn-success-custom"><i class="bi bi-download me-1"></i> Download Official PDF Report</a>
+      </div>
 
-  <p><strong>Claim Probability:</strong> {{ probability }}%</p>
+      <!-- Financial Metrics Grid -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <div class="metric-box h-100">
+            <div class="metric-label">Estimated Annual Premium</div>
+            <div class="metric-value text-info mt-2">₹{{ "{:,.2f}".format(premium) }}</div>
+            <div class="small text-sub mt-1">XGBoost Regressor prediction</div>
+          </div>
+        </div>
 
-  <h5>Recommended Policies:</h5>
-  <ul>
-  {% for p, pr in policies %}
-    <li>{{ p }} ({{ pr }}%)</li>
-  {% endfor %}
-  </ul>
+        <div class="col-md-4">
+          <div class="metric-box h-100">
+            <div class="metric-label">Monthly Installment</div>
+            <div class="metric-value text-white mt-2">₹{{ "{:,.2f}".format(monthly_premium) }}</div>
+            <div class="small text-sub mt-1">12 monthly payments</div>
+          </div>
+        </div>
 
-  <h5>Personalized Advice:</h5>
-  {% if advice.health_assessment %}
-  <h6>Health Assessment:</h6>
-  <ul>
-    {% for point in advice.health_assessment %}
-    <li>{{ point }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+        <div class="col-md-4">
+          <div class="metric-box h-100">
+            <div class="metric-label">Claim Risk Assessment</div>
+            <div class="mt-2">
+              {% if probability < 35 %}
+                <span class="badge badge-low-risk fs-6"><i class="bi bi-check-circle-fill me-1"></i> Low Risk ({{ probability }}%)</span>
+              {% elif probability < 65 %}
+                <span class="badge badge-med-risk fs-6"><i class="bi bi-exclamation-triangle-fill me-1"></i> Moderate Risk ({{ probability }}%)</span>
+              {% else %}
+                <span class="badge badge-high-risk fs-6"><i class="bi bi-x-circle-fill me-1"></i> High Claim Risk ({{ probability }}%)</span>
+              {% endif %}
+            </div>
+            <div class="progress mt-3" style="height: 8px; background: rgba(255,255,255,0.1);">
+              <div class="progress-bar {% if probability >= 65 %}bg-danger{% elif probability >= 35 %}bg-warning{% else %}bg-success{% endif %}" role="progressbar" style="width: {{ probability }}%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  {% if advice.insurance_guidance %}
-  <h6>Insurance Guidance:</h6>
-  <ul>
-    {% for point in advice.insurance_guidance %}
-    <li>{{ point }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+      <!-- Interactive Chart.js Horizontal Bar Chart for Policy Match -->
+      <div class="glass-card border-0 mb-4 p-4">
+        <h5 class="fw-bold mb-3 text-white"><i class="bi bi-bar-chart-line-fill text-info me-1"></i> Policy Package Match Confidence</h5>
+        <div class="chart-container" style="height: 220px;">
+          <canvas id="policyMatchChart"></canvas>
+        </div>
+      </div>
 
-  {% if advice.recommended_policies %}
-  <h6>Recommended Policies:</h6>
-  <ul>
-    {% for policy, prob in advice.recommended_policies %}
-    <li>{{ policy }} ({{ prob }}%)</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+      <!-- AI Insights & Guidance -->
+      <div class="glass-card border-0 mb-4 p-4">
+        <h5 class="fw-bold mb-3 text-white"><i class="bi bi-robot text-warning me-1"></i> InsureBot AI Advisor Insights</h5>
+        
+        {% if advice.health_assessment %}
+        <div class="mb-3">
+          <h6 class="fw-semibold text-info"><i class="bi bi-heart-pulse me-1"></i> Health Assessment</h6>
+          <ul class="mb-0 text-sub">
+            {% for point in advice.health_assessment %}
+            <li class="mb-1">{{ point }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
 
-  {% if advice.closing %}
-  <p><em>{{ advice.closing }}</em></p>
-  {% endif %}
+        {% if advice.insurance_guidance %}
+        <div class="mb-3">
+          <h6 class="fw-semibold text-success"><i class="bi bi-shield-check me-1"></i> Financial & Insurance Guidance</h6>
+          <ul class="mb-0 text-sub">
+            {% for point in advice.insurance_guidance %}
+            <li class="mb-1">{{ point }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
 
-  <a href="/download_pdf" class="btn btn-primary mt-3">📄 Download PDF</a>
-</div>
+        {% if advice.closing %}
+        <div class="p-3 bg-dark bg-opacity-60 rounded-3 text-sub fst-italic border-start border-4 border-info mt-2">
+          "{{ advice.closing }}"
+        </div>
+        {% endif %}
+      </div>
 
+      <div class="d-flex justify-content-between">
+        <a href="/dashboard" class="btn btn-outline-light rounded-3"><i class="bi bi-speedometer2 me-1"></i> Back to Dashboard</a>
+        <a href="/download_pdf" class="btn btn-primary-custom"><i class="bi bi-file-earmark-pdf me-1"></i> Download PDF Report</a>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>&copy; 2026 InsureSence. All rights reserved.</footer>
+
+  <script src="{{ url_for('static', filename='particles.js') }}"></script>
+  <script>
+    // Chart.js Horizontal Bar Chart for Policy Match
+    const pNames = [{% for name, prob in policies %}'{{ name }}',{% endfor %}];
+    const pProbs = [{% for name, prob in policies %}{{ prob }},{% endfor %}];
+
+    const ctxPolicy = document.getElementById('policyMatchChart').getContext('2d');
+    new Chart(ctxPolicy, {
+      type: 'bar',
+      data: {
+        labels: pNames,
+        datasets: [{
+          label: 'Match Confidence (%)',
+          data: pProbs,
+          backgroundColor: ['#3a86ff', '#00f5d4', '#10b981'],
+          borderRadius: 8
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: {
+            min: 0,
+            max: 100,
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: '#94a3b8' }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: '#ffffff', font: { weight: 'bold' } }
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>

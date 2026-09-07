@@ -1,28 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Ask AI</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <title>Ask AI Advisor - InsureSence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-5">
-  <h3>💬 Ask AI</h3>
-  <form action="/ask" method="POST" class="mb-3">
-    <input type="text" name="question" class="form-control" placeholder="Ask anything..." required>
-    <button type="submit" class="btn btn-primary mt-2">Ask AI</button>
-  </form>
 
-  {% if answer %}
-  <div class="alert alert-info mt-3">
-    <strong>AI Answer:</strong>
-    <p>{{ answer }}</p>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand" href="/home"><i class="bi bi-shield-check"></i> Insure<span>Sence</span></a>
+      <div class="ms-auto">
+        <a href="/index" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Dashboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <div class="glass-card mx-auto" style="max-width: 750px;">
+      <h3 class="text-gradient mb-3"><i class="bi bi-robot text-primary"></i> Ask InsureBot AI</h3>
+      <p class="text-muted small mb-4">Get instant answers on insurance policies, health factors, claim probabilities, and premium optimization tips.</p>
+
+      <form action="/ask" method="POST" class="mb-4">
+        <div class="mb-3">
+          <label class="form-label fw-bold">Your Question</label>
+          <textarea name="question" class="form-control" rows="3" placeholder="e.g. How can I lower my insurance premium if I am over 40?" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary-custom px-4"><i class="bi bi-send"></i> Submit Question</button>
+      </form>
+
+      {% if answer %}
+      <div class="card border-0 bg-light p-4 rounded-3 border-start border-4 border-primary shadow-sm">
+        <h5 class="fw-bold text-dark mb-2"><i class="bi bi-chat-quote-fill text-primary"></i> InsureBot Response</h5>
+        <p class="mb-0 text-secondary" style="white-space: pre-line;">{{ answer }}</p>
+      </div>
+      {% endif %}
+
+      <div class="mt-4 text-center">
+        <a href="/support" class="btn btn-link text-decoration-none text-muted small">
+          <i class="bi bi-chat-dots"></i> Switch to Real-Time Support Chat
+        </a>
+      </div>
+    </div>
   </div>
-  {% endif %}
 
-  <a href="/home" class="btn btn-success mt-3">🔙 Back to Home</a>
-</div>
+  <footer>&copy; 2026 InsureSence. All rights reserved.</footer>
 </body>
 </html>

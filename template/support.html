@@ -1,64 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Customer Support</title>
+  <meta charset="UTF-8">
+  <title>InsureBot AI Support - InsureSence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-  
-  <style>
-    body{background:#f5f7fb;font-family:Segoe UI,Roboto,Arial}
-    .chat-box{max-width:800px;margin:30px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.08)}
-    .messages{height:420px;overflow:auto;border:1px solid #eef2f7;padding:12px;border-radius:8px;background:#fbfdff}
-    .msg{margin-bottom:12px}
-    .user{color:#0b5ed7}
-    .assistant{color:#212529}
-  </style>
 </head>
 <body>
-  <div class="container">
-    <div class="chat-box">
-      <h4 id="assistantHeader">Customer Support</h4>
 
-      <div id="messages" class="messages mb-3"></div>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand" href="/home"><i class="bi bi-shield-check"></i> Insure<span>Sence</span></a>
+      <div class="ms-auto">
+        <a href="/home" class="btn btn-outline-light btn-sm"><i class="bi bi-house"></i> Home</a>
+      </div>
+    </div>
+  </nav>
 
-      <form id="chatForm" class="d-flex">
-        <input id="prompt" class="form-control me-2" placeholder="Type your question..." autocomplete="off">
-        <button class="btn btn-primary" type="submit">Send</button>
-      </form>
+  <div class="container py-4">
+    <div class="chat-wrapper">
+      <div class="chat-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-primary bg-opacity-25 rounded-circle p-2 text-primary fs-4">
+            <i class="bi bi-robot"></i>
+          </div>
+          <div>
+            <h5 class="m-0 text-white fw-bold">InsureBot AI Support</h5>
+            <span class="small text-success"><i class="bi bi-circle-fill fs-6"></i> Online • Powered by Gemini AI</span>
+          </div>
+        </div>
+      </div>
 
-      <div class="text-end mt-2">
-        <a href="/home" class="btn btn-sm btn-secondary">Back</a>
+      <div id="chatMessages" class="chat-messages">
+        <div class="chat-bubble chat-bubble-ai">
+          👋 Hello! I'm <strong>InsureBot</strong>, your personal AI insurance assistant. Ask me anything about premium predictions, claim probabilities, policy tiers, or health risk factors!
+        </div>
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="px-3 py-2 bg-light border-top border-bottom d-flex flex-wrap gap-2">
+        <button class="btn btn-outline-secondary btn-sm rounded-pill suggestion-chip">How is my premium calculated?</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill suggestion-chip">Why does smoking increase cost?</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill suggestion-chip">What is Gold Comprehensive coverage?</button>
+      </div>
+
+      <div class="p-3 bg-white">
+        <form id="chatForm" class="d-flex gap-2">
+          <input type="text" id="userInput" class="form-control" placeholder="Ask InsureBot a question..." required autocomplete="off">
+          <button type="submit" id="sendBtn" class="btn btn-primary-custom px-4">
+            Send <i class="bi bi-send-fill ms-1"></i>
+          </button>
+        </form>
       </div>
     </div>
   </div>
 
+  <footer>&copy; 2026 InsureSence. Powered by Google Gemini AI.</footer>
+
   <script>
-    function appendMessage(role, text){
-      const container = document.getElementById('messages');
-      const el = document.createElement('div');
-      el.className = 'msg';
-      el.innerHTML = `<strong class="${role}">${role === 'user' ? 'You' : 'InsureBot'}:</strong> ${text}`;
-      container.appendChild(el);
-      container.scrollTop = container.scrollHeight;
+    const messagesContainer = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function appendMessage(sender, text) {
+      const bubble = document.createElement('div');
+      bubble.className = `chat-bubble ${sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-ai'}`;
+      bubble.innerHTML = text.replace(/\n/g, '<br>');
+      messagesContainer.appendChild(bubble);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    document.getElementById('chatForm').addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const input = document.getElementById('prompt');
-      const text = input.value.trim();
-      if(!text) return;
-      appendMessage('user', text);
-      input.value = '';
+    function appendTypingIndicator() {
+      const bubble = document.createElement('div');
+      bubble.id = 'typingIndicator';
+      bubble.className = 'chat-bubble chat-bubble-ai text-muted fst-italic';
+      bubble.innerHTML = '<i class="bi bi-three-dots"></i> InsureBot is thinking...';
+      messagesContainer.appendChild(bubble);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
 
-      const res = await fetch('/support_api', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({message: text})
+    function removeTypingIndicator() {
+      const el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+
+    async function sendMessage(text) {
+      if (!text) return;
+      appendMessage('user', text);
+      userInput.value = '';
+      appendTypingIndicator();
+
+      try {
+        const res = await fetch('/support_api', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        removeTypingIndicator();
+        appendMessage('ai', data.reply || 'InsureBot is currently offline.');
+      } catch (err) {
+        removeTypingIndicator();
+        appendMessage('ai', 'Error connecting to InsureBot service.');
+      }
+    }
+
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      sendMessage(userInput.value.trim());
+    });
+
+    document.querySelectorAll('.suggestion-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        sendMessage(chip.textContent.trim());
       });
-      const data = await res.json();
-      appendMessage('assistant', data.reply);
     });
   </script>
 </body>

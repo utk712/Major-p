@@ -1,46 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Prediction History</title>
+  <meta charset="UTF-8">
+  <title>Prediction History - InsureSence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
 </head>
-<body class="p-4">
+<body>
 
-<a href="/index" class="btn btn-secondary mb-3">← Back</a>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand" href="/home"><i class="bi bi-shield-check"></i> Insure<span>Sence</span></a>
+      <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+          <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/index">New Prediction</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/history">History</a></li>
+          <li class="nav-item"><a class="nav-link" href="/ask"><i class="bi bi-chat-dots"></i> Ask AI</a></li>
+          <li class="nav-item ms-lg-2"><a href="/logout" class="btn btn-outline-light btn-sm px-3">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-<div class="container">
-  <h2 class="mb-4 text-center">📜 Prediction History</h2>
-
-  {% if predictions %}
-    {% for p in predictions %}
-    <div class="card p-3 shadow-sm mb-4">
-
-      <p><b>Name:</b> {{ p.personal_details.name }}</p>
-      <p><b>Premium:</b> ₹{{ p.premium }}</p>
-      <p><b>Claim Likely?:</b> {{ "Yes" if p.claim else "No" }}</p>
-
-      <p><b>Claim Probability:</b></p>
-      <div class="progress mb-3">
-        <div class="progress-bar 
-          {% if p.probability >= 70 %}bg-success
-          {% elif p.probability >= 40 %}bg-warning
-          {% else %}bg-danger{% endif %}"
-          style="width: {{ p.probability }}%;">
-          {{ p.probability }}%
+  <div class="container py-5">
+    <div class="glass-card mx-auto" style="max-width: 900px;">
+      
+      <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+        <div>
+          <h2 class="text-gradient m-0"><i class="bi bi-clock-history"></i> Prediction History Log</h2>
+          <p class="text-muted small m-0 mt-1">Review past premium calculations and download PDF reports</p>
         </div>
+        <a href="/index" class="btn btn-primary-custom btn-sm"><i class="bi bi-plus-circle"></i> New Assessment</a>
       </div>
 
-      <h6>💡 Personalized Advice:</h6>
-      <p>{{ p.advice }}</p>
+      {% if predictions %}
+        <div class="d-flex flex-direction-column gap-3 flex-column">
+        {% for p in predictions %}
+        <div class="card border-0 shadow-sm rounded-3 p-4 bg-white">
+          <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <div class="fw-bold text-dark fs-5">
+              <i class="bi bi-person-fill text-primary"></i> {{ p.personal_details.get('name', 'User Record') }}
+            </div>
+            <span class="badge bg-light text-secondary border fw-normal">
+              <i class="bi bi-calendar3"></i> {{ p.created_at }}
+            </span>
+          </div>
 
-      <a href="/history_view/{{ loop.index0 }}" class="btn btn-primary mt-2">📄 Download PDF</a>
+          <div class="row g-3 align-items-center mb-3">
+            <div class="col-md-3">
+              <div class="small text-muted">Estimated Premium</div>
+              <div class="fw-bold fs-5 text-primary">₹{{ "{:,.2f}".format(p.premium) }}</div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="small text-muted">Monthly Installment</div>
+              <div class="fw-bold fs-6 text-dark">₹{{ "{:,.2f}".format(p.monthly_premium) }}</div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="d-flex justify-content-between small text-muted mb-1">
+                <span>Claim Risk Probability</span>
+                <span class="fw-bold text-dark">{{ p.probability }}%</span>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar {% if p.probability >= 65 %}bg-danger{% elif p.probability >= 35 %}bg-warning{% else %}bg-success{% endif %}" style="width: {{ p.probability }}%;"></div>
+              </div>
+            </div>
+          </div>
+
+          {% if p.policies %}
+          <div class="mb-3">
+            <span class="small text-muted me-2">Top Recommended Policies:</span>
+            {% for name, prob in p.policies[:3] %}
+              <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 me-1">{{ name }} ({{ prob }}%)</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="d-flex justify-content-end">
+            <a href="/history_view/{{ p.id }}" class="btn btn-outline-primary btn-sm rounded-2">
+              <i class="bi bi-file-earmark-pdf"></i> Download PDF Report
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-5">
+          <div class="display-1 text-muted opacity-25 mb-3"><i class="bi bi-folder2-open"></i></div>
+          <h4 class="text-secondary">No Predictions Found</h4>
+          <p class="text-muted small">You haven't run any insurance predictions yet.</p>
+          <a href="/index" class="btn btn-primary-custom mt-2"><i class="bi bi-calculator"></i> Run Your First Prediction</a>
+        </div>
+      {% endif %}
 
     </div>
-    {% endfor %}
-  {% else %}
-    <p class="text-muted text-center">No history found.</p>
-  {% endif %}
-</div>
+  </div>
 
+  <footer>&copy; 2026 InsureSence. All rights reserved.</footer>
 </body>
 </html>

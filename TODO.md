@@ -1,0 +1,2 @@
+- [x] Update the gemini_support function in app.py to make the AI prompt completely unrestricted, allowing answers to any question while maintaining InsureBot identity.
+- [x] Test the changes by running the app and asking various questions.
