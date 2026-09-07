@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Prediction Results - InsureSence</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
@@ -22,26 +22,26 @@
       <a class="navbar-brand" href="/home"><i class="bi bi-shield-check"></i> Insure<span>Sence</span></a>
       <div class="ms-auto d-flex align-items-center gap-2">
         <a href="/dashboard" class="btn btn-outline-light btn-sm"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a href="/index" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> New Prediction</a>
-        <a href="/download_pdf" class="btn btn-primary-custom btn-sm"><i class="bi bi-file-earmark-pdf"></i> Download PDF</a>
+        <a href="/index" class="btn btn-outline-light btn-sm d-none d-sm-inline-block"><i class="bi bi-arrow-left"></i> New Prediction</a>
+        <a href="/download_pdf" class="btn btn-primary-custom btn-sm"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
       </div>
     </div>
   </nav>
 
-  <div class="container py-5">
+  <div class="container py-4 py-md-5">
     <div class="glass-card mx-auto" style="max-width: 900px;">
       
-      <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+      <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 pb-3 border-bottom border-secondary border-opacity-25 gap-2">
         <div>
           <h2 class="text-gradient m-0"><i class="bi bi-file-earmark-bar-graph text-info me-1"></i> Prediction Assessment</h2>
           <p class="text-sub small m-0 mt-1">Prepared for <strong>{{ personal_details.name }}</strong> (Blood Group: {{ personal_details.blood_group }})</p>
         </div>
-        <a href="/download_pdf" class="btn btn-success-custom"><i class="bi bi-download me-1"></i> Download Official PDF Report</a>
+        <a href="/download_pdf" class="btn btn-success-custom w-100 w-sm-auto"><i class="bi bi-download me-1"></i> Download PDF Report</a>
       </div>
 
       <!-- Financial Metrics Grid -->
-      <div class="row g-4 mb-4">
-        <div class="col-md-4">
+      <div class="row g-3 g-md-4 mb-4">
+        <div class="col-12 col-md-4">
           <div class="metric-box h-100">
             <div class="metric-label">Estimated Annual Premium</div>
             <div class="metric-value text-info mt-2">₹{{ "{:,.2f}".format(premium) }}</div>
@@ -49,24 +49,24 @@
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-6 col-md-4">
           <div class="metric-box h-100">
-            <div class="metric-label">Monthly Installment</div>
+            <div class="metric-label">Monthly Payment</div>
             <div class="metric-value text-white mt-2">₹{{ "{:,.2f}".format(monthly_premium) }}</div>
             <div class="small text-sub mt-1">12 monthly payments</div>
           </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-6 col-md-4">
           <div class="metric-box h-100">
-            <div class="metric-label">Claim Risk Assessment</div>
+            <div class="metric-label">Claim Risk</div>
             <div class="mt-2">
               {% if probability < 35 %}
-                <span class="badge badge-low-risk fs-6"><i class="bi bi-check-circle-fill me-1"></i> Low Risk ({{ probability }}%)</span>
+                <span class="badge badge-low-risk fs-6"><i class="bi bi-check-circle-fill me-1"></i> Low ({{ probability }}%)</span>
               {% elif probability < 65 %}
-                <span class="badge badge-med-risk fs-6"><i class="bi bi-exclamation-triangle-fill me-1"></i> Moderate Risk ({{ probability }}%)</span>
+                <span class="badge badge-med-risk fs-6"><i class="bi bi-exclamation-triangle-fill me-1"></i> Moderate ({{ probability }}%)</span>
               {% else %}
-                <span class="badge badge-high-risk fs-6"><i class="bi bi-x-circle-fill me-1"></i> High Claim Risk ({{ probability }}%)</span>
+                <span class="badge badge-high-risk fs-6"><i class="bi bi-x-circle-fill me-1"></i> High ({{ probability }}%)</span>
               {% endif %}
             </div>
             <div class="progress mt-3" style="height: 8px; background: rgba(255,255,255,0.1);">
@@ -77,15 +77,15 @@
       </div>
 
       <!-- Interactive Chart.js Horizontal Bar Chart for Policy Match -->
-      <div class="glass-card border-0 mb-4 p-4">
+      <div class="glass-card border-0 mb-4 p-3 p-md-4">
         <h5 class="fw-bold mb-3 text-white"><i class="bi bi-bar-chart-line-fill text-info me-1"></i> Policy Package Match Confidence</h5>
-        <div class="chart-container" style="height: 220px;">
+        <div class="chart-container" style="height: 200px;">
           <canvas id="policyMatchChart"></canvas>
         </div>
       </div>
 
       <!-- AI Insights & Guidance -->
-      <div class="glass-card border-0 mb-4 p-4">
+      <div class="glass-card border-0 mb-4 p-3 p-md-4">
         <h5 class="fw-bold mb-3 text-white"><i class="bi bi-robot text-warning me-1"></i> InsureBot AI Advisor Insights</h5>
         
         {% if advice.health_assessment %}
@@ -117,9 +117,9 @@
         {% endif %}
       </div>
 
-      <div class="d-flex justify-content-between">
-        <a href="/dashboard" class="btn btn-outline-light rounded-3"><i class="bi bi-speedometer2 me-1"></i> Back to Dashboard</a>
-        <a href="/download_pdf" class="btn btn-primary-custom"><i class="bi bi-file-earmark-pdf me-1"></i> Download PDF Report</a>
+      <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+        <a href="/dashboard" class="btn btn-outline-light rounded-3 w-100 w-sm-auto"><i class="bi bi-speedometer2 me-1"></i> Back to Dashboard</a>
+        <a href="/download_pdf" class="btn btn-primary-custom w-100 w-sm-auto"><i class="bi bi-file-earmark-pdf me-1"></i> Download PDF Report</a>
       </div>
 
     </div>
@@ -129,7 +129,6 @@
 
   <script src="{{ url_for('static', filename='particles.js') }}"></script>
   <script>
-    // Chart.js Horizontal Bar Chart for Policy Match
     const pNames = [{% for name, prob in policies %}'{{ name }}',{% endfor %}];
     const pProbs = [{% for name, prob in policies %}{{ prob }},{% endfor %}];
 

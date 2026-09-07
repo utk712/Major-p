@@ -1,11 +1,11 @@
-/* InsureSence High-Tech Cyber Slate Theme with Visual Animations */
+/* InsureSence High-Tech Cyber Slate Theme with Mobile-First Responsiveness */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
   --bg-dark: #0b132b;
   --bg-slate: #1c2541;
-  --bg-card: rgba(28, 37, 65, 0.78);
-  --bg-card-hover: rgba(35, 47, 80, 0.9);
+  --bg-card: rgba(28, 37, 65, 0.82);
+  --bg-card-hover: rgba(35, 47, 80, 0.92);
   --cyan-glow: #00f5d4;
   --electric-blue: #3a86ff;
   --blue-hover: #2563eb;
@@ -26,7 +26,7 @@
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-dark);
@@ -37,6 +37,12 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--electric-blue);
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -50,7 +56,6 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden;
 }
 
 /* Animated Ambient Glow Orbs */
@@ -58,9 +63,9 @@ body {
   position: fixed;
   top: -150px;
   left: -150px;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(0, 245, 212, 0.15) 0%, rgba(0,0,0,0) 70%);
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(0, 245, 212, 0.12) 0%, rgba(0,0,0,0) 70%);
   border-radius: 50%;
   pointer-events: none;
   z-index: 0;
@@ -71,9 +76,9 @@ body {
   position: fixed;
   bottom: -200px;
   right: -150px;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(58, 134, 255, 0.18) 0%, rgba(0,0,0,0) 70%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(58, 134, 255, 0.15) 0%, rgba(0,0,0,0) 70%);
   border-radius: 50%;
   pointer-events: none;
   z-index: 0;
@@ -82,17 +87,16 @@ body {
 
 @keyframes floatOrb1 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(120px, 80px) scale(1.2); }
-  100% { transform: translate(-50px, 150px) scale(0.9); }
+  50% { transform: translate(80px, 60px) scale(1.15); }
+  100% { transform: translate(-30px, 100px) scale(0.9); }
 }
 
 @keyframes floatOrb2 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-100px, -120px) scale(1.15); }
-  100% { transform: translate(60px, -60px) scale(0.95); }
+  50% { transform: translate(-80px, -80px) scale(1.1); }
+  100% { transform: translate(40px, -40px) scale(0.95); }
 }
 
-/* Ensure content stays above background visual effects */
 .navbar, .container, footer {
   position: relative;
   z-index: 1;
@@ -100,20 +104,20 @@ body {
 
 /* Navbar */
 .navbar-custom {
-  background: rgba(11, 19, 43, 0.9) !important;
+  background: rgba(11, 19, 43, 0.95) !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 1rem 1.5rem;
+  padding: 0.85rem 1.25rem;
 }
 
 .navbar-brand {
   font-weight: 800;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: #ffffff !important;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   letter-spacing: -0.5px;
 }
 
@@ -138,7 +142,6 @@ body {
 .nav-link:hover, .nav-link.active {
   color: #ffffff !important;
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
 }
 
 /* Glassmorphism Cards */
@@ -149,7 +152,7 @@ body {
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
-  padding: 2.5rem;
+  padding: 2.25rem;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
@@ -218,7 +221,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   font-size: 0.9rem;
   color: var(--text-main);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .form-control, .form-select {
@@ -243,13 +246,12 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
 }
 
-/* Range Sliders */
 .form-range::-webkit-slider-thumb {
   background: var(--cyan-glow);
   box-shadow: 0 0 10px var(--cyan-glow);
 }
 
-/* Custom Buttons */
+/* Buttons */
 .btn-primary-custom {
   background: linear-gradient(135deg, var(--electric-blue), #2563eb);
   color: #ffffff;
@@ -317,14 +319,14 @@ h1, h2, h3, h4, h5, h6 {
 .chart-container {
   position: relative;
   margin: auto;
-  height: 260px;
+  height: 250px;
   width: 100%;
 }
 
 /* Chat Styling */
 .chat-wrapper {
   max-width: 880px;
-  margin: 2rem auto;
+  margin: 1.5rem auto;
   border-radius: var(--radius-xl);
   overflow: hidden;
   background: rgba(28, 37, 65, 0.95);
@@ -335,14 +337,14 @@ h1, h2, h3, h4, h5, h6 {
 .chat-header {
   background: rgba(11, 19, 43, 0.95);
   color: #ffffff;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--glass-border);
 }
 
 .chat-messages {
-  height: 460px;
+  height: 440px;
   overflow-y: auto;
-  padding: 1.5rem;
+  padding: 1.25rem;
   background: rgba(15, 23, 42, 0.7);
   display: flex;
   flex-direction: column;
@@ -350,11 +352,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .chat-bubble {
-  max-width: 82%;
-  padding: 1rem 1.25rem;
+  max-width: 85%;
+  padding: 0.85rem 1.1rem;
   border-radius: 16px;
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 0.92rem;
+  line-height: 1.55;
 }
 
 .chat-bubble-user {
@@ -362,7 +364,6 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(135deg, var(--electric-blue), #2563eb);
   color: #ffffff;
   border-bottom-right-radius: 2px;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .chat-bubble-ai {
@@ -373,12 +374,127 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom-left-radius: 2px;
 }
 
-/* Footer */
 footer {
   margin-top: auto;
-  padding: 1.5rem;
+  padding: 1.25rem;
   text-align: center;
   color: var(--text-muted);
   font-size: 0.85rem;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ========================================================
+   MOBILE & TABLET RESPONSIVE BREAKPOINTS (Fixes Alignment)
+   ======================================================== */
+
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background: rgba(11, 19, 43, 0.98);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-top: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .navbar-nav .nav-link {
+    padding: 0.65rem 1rem !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-top: 1.5rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .glass-card {
+    padding: 1.25rem 1rem !important;
+    border-radius: var(--radius-lg) !important;
+  }
+
+  .display-5 {
+    font-size: 1.85rem !important;
+  }
+
+  h2 {
+    font-size: 1.4rem !important;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
+  }
+
+  /* Metric values sizing on mobile */
+  .metric-box {
+    padding: 1rem 0.75rem !important;
+  }
+
+  .metric-box .metric-value {
+    font-size: 1.45rem !important;
+  }
+
+  .metric-box .metric-label {
+    font-size: 0.72rem !important;
+  }
+
+  /* Buttons stack full width on mobile */
+  .d-flex.gap-3, .d-flex.gap-2, .d-flex.flex-wrap {
+    gap: 0.65rem !important;
+  }
+
+  .mobile-stack-btn .btn, .glass-card .btn-primary-custom, .glass-card .btn-success-custom {
+    width: 100% !important;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Chat wrapper mobile adjustments */
+  .chat-wrapper {
+    margin: 0.75rem 0 !important;
+    border-radius: var(--radius-lg) !important;
+  }
+
+  .chat-messages {
+    height: 380px !important;
+    padding: 0.85rem !important;
+  }
+
+  .chat-bubble {
+    max-width: 90% !important;
+    font-size: 0.88rem !important;
+    padding: 0.75rem 0.95rem !important;
+  }
+
+  /* Chart container mobile scaling */
+  .chart-container {
+    height: 200px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass-card {
+    padding: 1rem 0.85rem !important;
+  }
+
+  .navbar-brand {
+    font-size: 1.15rem !important;
+  }
+
+  .badge {
+    font-size: 0.78rem !important;
+  }
+
+  .input-group-text {
+    padding: 0.5rem 0.65rem !important;
+  }
+
+  .form-control, .form-select {
+    padding: 0.65rem 0.75rem !important;
+    font-size: 0.88rem !important;
+  }
+
+  .letter-spacing-2 {
+    letter-spacing: 2px !important;
+    font-size: 1.1rem !important;
+  }
 }
